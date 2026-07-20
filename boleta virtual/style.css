@@ -1,0 +1,438 @@
+/*====================================================
+ BOLETA IMCO
+ ESTILOS
+====================================================*/
+
+
+*{
+
+    box-sizing:border-box;
+
+}
+
+
+body{
+
+    margin:0;
+
+    padding:0;
+
+    font-family:Arial, sans-serif;
+
+    background:#f2f4f7;
+
+    color:#333;
+
+}
+
+
+
+.titulo{
+
+    background:#0d47a1;
+
+    color:white;
+
+    text-align:center;
+
+    padding:20px;
+
+}
+
+
+.titulo h1{
+
+    margin:0;
+
+}
+
+
+
+section{
+
+    background:white;
+
+    margin:15px;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    box-shadow:0 3px 8px rgba(0,0,0,.12);
+
+}
+
+
+
+h2{
+
+    margin-top:0;
+
+    color:#333;
+
+}
+
+
+
+.configuracion,
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
+
+}
+
+
+
+.campo{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+label{
+
+    font-size:14px;
+
+    margin-bottom:5px;
+
+}
+
+
+
+input,
+select{
+
+    padding:10px;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+
+    font-size:16px;
+
+}
+
+
+
+
+
+/* DASHBOARD */
+
+
+.dashboard{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:12px;
+
+}
+
+
+
+.tarjeta{
+
+    padding:18px;
+
+    color:white;
+
+    border-radius:15px;
+
+    text-align:center;
+
+}
+
+
+
+.tarjeta span{
+
+    display:block;
+
+    font-size:14px;
+
+}
+
+
+
+.tarjeta strong{
+
+    display:block;
+
+    margin-top:10px;
+
+    font-size:25px;
+
+}
+
+
+
+.azul{
+
+    background:#1565c0;
+
+}
+
+
+.naranja{
+
+    background:#ef6c00;
+
+}
+
+
+.rojo{
+
+    background:#c62828;
+
+}
+
+
+.verde{
+
+    background:#2e7d32;
+
+}
+
+
+
+
+
+
+
+/* CALENDARIO */
+
+
+#calendario{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:12px;
+
+}
+
+
+
+.dia{
+
+    border-radius:12px;
+
+    border:2px solid #ddd;
+
+    padding:12px;
+
+    background:white;
+
+}
+
+
+
+.dia header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.dia h3{
+
+    margin:0;
+
+    font-size:18px;
+
+}
+
+
+
+.fecha{
+
+    background:#333;
+
+    color:white;
+
+    padding:5px 8px;
+
+    border-radius:8px;
+
+}
+
+
+
+.linea{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:10px 0;
+
+}
+
+
+
+.linea input{
+
+    width:120px;
+
+}
+
+
+
+.extra{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:5px 0;
+
+}
+
+
+
+.sabado{
+
+    border-color:#ff9800;
+
+}
+
+
+.domingo{
+
+    border-color:#d32f2f;
+
+}
+
+
+
+
+
+
+
+/* RESUMEN */
+
+
+.resumen p,
+.boleta p{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    border-bottom:1px solid #ddd;
+
+    padding:8px;
+
+}
+
+
+
+.total{
+
+    font-size:22px;
+
+    color:#0d47a1;
+
+}
+
+
+
+
+
+
+/* BOTONES */
+
+
+.botones{
+
+    display:flex;
+
+    gap:15px;
+
+    justify-content:center;
+
+    margin:20px;
+
+}
+
+
+
+button{
+
+    padding:14px 25px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#0d47a1;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+
+button:hover{
+
+    opacity:.8;
+
+}
+
+
+
+
+
+
+
+
+@media(max-width:700px){
+
+
+.configuracion,
+.grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+#calendario{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.dashboard{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+}
