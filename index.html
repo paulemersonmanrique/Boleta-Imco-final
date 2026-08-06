@@ -19,7 +19,7 @@
         }
         .container {
             background: white;
-            max-width: 820px;
+            max-width: 880px;
             width: 100%;
             padding: 30px 35px;
             border-radius: 20px;
@@ -130,12 +130,26 @@
             background: #1a6bb5;
             transform: scale(1.02);
         }
+        .btn-success {
+            background: #27ae60;
+            box-shadow: 0 4px 8px rgba(39,174,96,0.3);
+        }
+        .btn-success:hover {
+            background: #1e8449;
+        }
         .btn-secondary {
             background: #6c7a8a;
             box-shadow: 0 4px 8px rgba(108,122,138,0.3);
         }
         .btn-secondary:hover {
             background: #4e5b68;
+        }
+        .btn-warning {
+            background: #e67e22;
+            box-shadow: 0 4px 8px rgba(230,126,34,0.3);
+        }
+        .btn-warning:hover {
+            background: #ca6f1e;
         }
         #resultados {
             margin-top: 30px;
@@ -231,43 +245,103 @@
             border-radius: 12px;
             margin-left: 8px;
         }
+        .nota {
+            background: #d6eaf8;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 13px;
+            color: #1a5276;
+            border-left: 4px solid #2e86de;
+        }
+        .grid-horas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .grid-horas .campo {
+            margin: 0;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 4px;
+        }
+        .grid-horas .campo label {
+            min-width: auto;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .grid-horas .campo input {
+            min-width: auto;
+            padding: 6px 8px;
+            font-size: 13px;
+        }
+        .boton-extra {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+        }
+        .mensaje-temporal {
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: 500;
+            text-align: center;
+        }
         @media (max-width: 600px) {
             .container { padding: 15px; }
             .campo { flex-direction: column; align-items: stretch; }
             .campo label { min-width: auto; }
             .campo input { min-width: auto; }
             .radio-group { justify-content: center; }
+            .grid-horas { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .boton-extra { justify-content: center; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🧮 Validador de Boleta</h1>
-    <div class="sub">Ingresa los datos de tu boleta y la app calcula cada concepto</div>
+    <div class="sub">Basado en días trabajados</div>
+
+    <div class="nota">
+        <strong>📌 Importante:</strong> Este cálculo se basa en <strong>días efectivamente trabajados</strong>, 
+        no en una semana de lunes a viernes. Por lo tanto, se aplica el <strong>factor descuento 1.75</strong> de las 
+        horas extras para sábado, ya que solo se consideran los días laborados y las horas extras que se hicieron en ellos.
+    </div>
 
     <!-- DATOS GENERALES -->
     <div class="seccion">
         <h3>📌 Datos generales</h3>
         <div class="campo">
-            <label>Sueldo base mensual (S/) <span class="ejemplo">ej: 1025</span></label>
-            <input type="number" id="base" value="1025.00" step="0.01">
+            <label>Sueldo base mensual (S/) <span class="ejemplo">ej: 935</span></label>
+            <input type="number" id="base" value="0" step="0.01">
         </div>
         <div class="campo">
             <label>Jornal diario (S/) <span class="ejemplo">opcional</span></label>
-            <input type="number" id="jornal" value="" step="0.01" placeholder="Ej: 93.18">
+            <input type="number" id="jornal" value="0" step="0.01" placeholder="Ej: 85.00">
             <span class="info-jornal" id="jornalInfo">(si está vacío, se calcula como Base/30)</span>
         </div>
         <div class="campo">
             <label>Días trabajados <span class="ejemplo">ej: 11</span></label>
-            <input type="number" id="dias" value="11" step="0.5" min="0">
+            <input type="number" id="dias" value="0" step="0.5" min="0">
         </div>
         <div class="campo">
             <label>Total remuneraciones (S/) <span class="ejemplo">para verificar</span></label>
-            <input type="number" id="totalRem" value="2228.47" step="0.01">
+            <input type="number" id="totalRem" value="0" step="0.01">
         </div>
         <div class="campo">
-            <label>Asignación familiar (S/) <span class="ejemplo">10% de RMV si aplica</span></label>
-            <input type="number" id="asignacion" value="102.50" step="0.01">
+            <label>Asignación familiar (S/) <span class="ejemplo">si aplica</span></label>
+            <input type="number" id="asignacion" value="0" step="0.01">
         </div>
     </div>
 
@@ -276,53 +350,48 @@
         <h3>🏦 Banco de horas (últimos 2 días de la quincena anterior)</h3>
         <div class="campo">
             <label>Horas extras del penúltimo día <span class="ejemplo">ej: 8</span></label>
-            <input type="number" id="bancoDia14" value="8" step="0.5" min="0">
+            <input type="number" id="bancoDia14" value="0" step="0.5" min="0">
         </div>
         <div class="campo">
             <label>Horas extras del último día <span class="ejemplo">ej: 8</span></label>
-            <input type="number" id="bancoDia15" value="8" step="0.5" min="0">
+            <input type="number" id="bancoDia15" value="0" step="0.5" min="0">
         </div>
         <div class="banco-resumen">
             <strong>📌 Automático:</strong> La app calculará cuántas horas van al 25% y cuántas al 35% según la ley (2 primeras horas al 25%, el resto al 35%).
         </div>
     </div>
 
-    <!-- HORAS EXTRAS ACTUALES -->
+    <!-- HORAS EXTRAS ACTUALES (SOLO MANUAL) -->
     <div class="seccion" style="border-left-color: #27ae60;">
-        <h3>⏱️ Horas extras de la quincena actual</h3>
-        <div class="campo">
-            <label>Total horas extras <span class="ejemplo">ej: 37.5</span></label>
-            <input type="number" id="heActualTotal" value="37.5" step="0.5">
+        <h3>⏱️ Horas extras de la quincena actual (ingreso manual)</h3>
+        <div class="nota" style="margin-bottom: 10px; background: #eaf2f8;">
+            <strong>📝 Instrucción:</strong> Ingresa las horas extras que realizaste en cada día trabajado. 
+            La app calculará automáticamente cuántas van al 25% (primeras 2 horas) y cuántas al 35% (el resto).
         </div>
-        <div class="campo">
-            <label>Número de días con horas extras <span class="ejemplo">ej: 11</span></label>
-            <input type="number" id="diasHE" value="11" step="1" min="1">
+        <div class="grid-horas">
+            <div class="campo"><label>Día 1</label><input type="number" id="heDia1" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 2</label><input type="number" id="heDia2" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 3</label><input type="number" id="heDia3" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 4</label><input type="number" id="heDia4" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 5</label><input type="number" id="heDia5" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 6</label><input type="number" id="heDia6" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 7</label><input type="number" id="heDia7" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 8</label><input type="number" id="heDia8" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 9</label><input type="number" id="heDia9" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 10</label><input type="number" id="heDia10" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 11</label><input type="number" id="heDia11" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 12</label><input type="number" id="heDia12" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 13</label><input type="number" id="heDia13" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 14</label><input type="number" id="heDia14" value="0" step="0.5" min="0"></div>
+            <div class="campo"><label>Día 15</label><input type="number" id="heDia15" value="0" step="0.5" min="0"></div>
         </div>
-        <div class="campo">
-            <label>Distribución de horas</label>
-            <div class="radio-group">
-                <label><input type="radio" name="distribucion" value="uniforme" checked> Uniforme</label>
-                <label><input type="radio" name="distribucion" value="variable"> Variable (ingreso manual)</label>
-            </div>
+        <div class="boton-extra">
+            <button class="btn btn-success btn-sm" id="aplicarDescuentoBtn">🔽 Aplicar descuento 1.75</button>
+            <button class="btn btn-warning btn-sm" id="resetHorasBtn">↺ Resetear horas</button>
         </div>
-        <div id="distribucionVariable" style="display:none; margin-top:10px;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div class="campo" style="margin:0;"><label>Día 1</label><input type="number" id="heDia1" value="3" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 2</label><input type="number" id="heDia2" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 3</label><input type="number" id="heDia3" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 4</label><input type="number" id="heDia4" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 5</label><input type="number" id="heDia5" value="3" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 6</label><input type="number" id="heDia6" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 7</label><input type="number" id="heDia7" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 8</label><input type="number" id="heDia8" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 9</label><input type="number" id="heDia9" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 10</label><input type="number" id="heDia10" value="3" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 11</label><input type="number" id="heDia11" value="3.5" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 12</label><input type="number" id="heDia12" value="0" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 13</label><input type="number" id="heDia13" value="0" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 14</label><input type="number" id="heDia14" value="0" step="0.5" min="0"></div>
-                <div class="campo" style="margin:0;"><label>Día 15</label><input type="number" id="heDia15" value="0" step="0.5" min="0"></div>
-            </div>
+        <div style="font-size:12px; color:#6b7a8f; margin-top:8px;">
+            ⚠️ El botón <strong>"Aplicar descuento 1.75"</strong> resta 1.75 horas a cada día con horas extras (factor por sábado). 
+            Si el resultado es negativo, se deja en 0. <strong>Ejemplo: 8.00 - 1.75 = 6.25</strong>
         </div>
     </div>
 
@@ -331,7 +400,7 @@
         <h3>📅 Feriados y domingos</h3>
         <div class="campo">
             <label>Feriados (cantidad) <span class="ejemplo">ej: 3</span></label>
-            <input type="number" id="feriados" value="3" step="1" min="0">
+            <input type="number" id="feriados" value="0" step="1" min="0">
         </div>
         <div class="campo">
             <label>¿Feriados trabajados?</label>
@@ -342,7 +411,7 @@
         </div>
         <div class="campo">
             <label>Domingos (cantidad) <span class="ejemplo">ej: 2</span></label>
-            <input type="number" id="domingos" value="2" step="1" min="0">
+            <input type="number" id="domingos" value="0" step="1" min="0">
         </div>
         <div class="campo">
             <label>¿Domingos trabajados?</label>
@@ -386,11 +455,6 @@
         const bancoDia14Input = document.getElementById('bancoDia14');
         const bancoDia15Input = document.getElementById('bancoDia15');
 
-        const heActualTotalInput = document.getElementById('heActualTotal');
-        const diasHEInput = document.getElementById('diasHE');
-        const distribucionRadios = document.querySelectorAll('input[name="distribucion"]');
-        const distribucionVarDiv = document.getElementById('distribucionVariable');
-
         const feriadosInput = document.getElementById('feriados');
         const domingosInput = document.getElementById('domingos');
 
@@ -398,6 +462,8 @@
         const detalleDiv = document.getElementById('detalle');
         const calcularBtn = document.getElementById('calcularBtn');
         const limpiarBtn = document.getElementById('limpiarBtn');
+        const aplicarDescuentoBtn = document.getElementById('aplicarDescuentoBtn');
+        const resetHorasBtn = document.getElementById('resetHorasBtn');
 
         // Actualizar info del jornal
         function actualizarJornalInfo() {
@@ -416,24 +482,27 @@
         baseInput.addEventListener('input', actualizarJornalInfo);
         jornalInput.addEventListener('input', actualizarJornalInfo);
 
-        // Mostrar/ocultar distribución variable
-        distribucionRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                distribucionVarDiv.style.display = (this.value === 'variable') ? 'block' : 'none';
-            });
-        });
-
-        // Función para obtener horas por día (variable)
+        // Función para obtener horas por día
         function getHorasPorDia() {
             const horas = [];
             for (let i = 1; i <= 15; i++) {
                 const val = document.getElementById('heDia' + i);
                 if (val) {
                     const h = parseFloat(val.value) || 0;
-                    if (h > 0) horas.push(h);
+                    horas.push(h);
                 }
             }
             return horas;
+        }
+
+        // Función para establecer horas por día
+        function setHorasPorDia(horas) {
+            for (let i = 1; i <= 15; i++) {
+                const val = document.getElementById('heDia' + i);
+                if (val && horas[i-1] !== undefined) {
+                    val.value = horas[i-1].toFixed(2);
+                }
+            }
         }
 
         // Función para calcular banco de horas
@@ -462,8 +531,47 @@
             };
         }
 
+        // Aplicar descuento 1.75 a todas las horas extras (con 2 decimales)
+        function aplicarDescuento() {
+            const horas = getHorasPorDia();
+            const nuevasHoras = horas.map(h => {
+                if (h > 0) {
+                    const resultado = parseFloat((h - 1.75).toFixed(2));
+                    return Math.max(0, resultado);
+                }
+                return 0;
+            });
+            setHorasPorDia(nuevasHoras);
+            // Mostrar mensaje temporal
+            const container = document.querySelector('.grid-horas').parentNode;
+            const oldMsg = container.querySelector('.mensaje-temporal');
+            if (oldMsg) oldMsg.remove();
+            const msg = document.createElement('div');
+            msg.className = 'mensaje-temporal';
+            msg.textContent = '✅ Se aplicó el descuento de 1.75 horas a cada día con horas extras.';
+            container.appendChild(msg);
+            setTimeout(() => { if (msg.parentNode) msg.remove(); }, 4000);
+        }
+
+        // Resetear horas a 0
+        function resetearHoras() {
+            const horas = getHorasPorDia();
+            const nuevasHoras = horas.map(() => 0);
+            setHorasPorDia(nuevasHoras);
+            // Mostrar mensaje temporal
+            const container = document.querySelector('.grid-horas').parentNode;
+            const oldMsg = container.querySelector('.mensaje-temporal');
+            if (oldMsg) oldMsg.remove();
+            const msg = document.createElement('div');
+            msg.className = 'mensaje-temporal';
+            msg.style.background = '#e67e22';
+            msg.textContent = '↺ Se reseteó todas las horas extras a 0.';
+            container.appendChild(msg);
+            setTimeout(() => { if (msg.parentNode) msg.remove(); }, 3000);
+        }
+
         function calcular() {
-            // Leer valores
+            // Leer valores generales
             const base = parseFloat(baseInput.value) || 0;
             let jornal = parseFloat(jornalInput.value) || 0;
             if (jornal === 0 && base > 0) {
@@ -473,12 +581,11 @@
             const totalRem = parseFloat(totalRemInput.value) || 0;
             const asignacion = parseFloat(asignacionInput.value) || 0;
 
+            // Banco de horas
             const bancoDia14 = parseFloat(bancoDia14Input.value) || 0;
             const bancoDia15 = parseFloat(bancoDia15Input.value) || 0;
 
-            const heActualTotal = parseFloat(heActualTotalInput.value) || 0;
-            const diasHE = parseInt(diasHEInput.value) || 1;
-
+            // Feriados y domingos
             const feriados = parseInt(feriadosInput.value) || 0;
             const domingos = parseInt(domingosInput.value) || 0;
             const feriadoTrab = parseInt(document.querySelector('input[name="feriadoTrab"]:checked').value);
@@ -501,43 +608,31 @@
             // Banco de horas
             const banco = calcularBanco(bancoDia14, bancoDia15, valorHE25, valorHE35);
 
-            // Horas extras actuales
+            // Horas extras actuales (solo manual)
+            const horasDiarias = getHorasPorDia();
             let he25Actual = 0, he35Actual = 0;
+            let totalHEActual = 0;
             let distribucionMsg = '';
-            const distribucion = document.querySelector('input[name="distribucion"]:checked').value;
 
-            if (distribucion === 'uniforme') {
-                const horasPorDia = heActualTotal / diasHE;
-                const he25PorDia = Math.min(2, horasPorDia);
-                const he35PorDia = Math.max(0, horasPorDia - 2);
-                he25Actual = he25PorDia * diasHE;
-                he35Actual = he35PorDia * diasHE;
-                distribucionMsg = `📊 ${diasHE} días con ${horasPorDia.toFixed(1)} h/día → ${he25Actual.toFixed(1)}h al 25% y ${he35Actual.toFixed(1)}h al 35%`;
+            if (horasDiarias.every(h => h === 0)) {
+                distribucionMsg = '📊 No se registraron horas extras en la quincena actual.';
             } else {
-                const horasDiarias = getHorasPorDia();
-                if (horasDiarias.length === 0) {
-                    detalleDiv.innerHTML = `<div class="error">⚠️ Ingresa al menos un día con horas extras en la distribución variable.</div>`;
-                    resultadoDiv.style.display = 'block';
-                    return;
-                }
                 let totalHE = 0;
-                horasDiarias.forEach(h => {
+                horasDiarias.forEach((h) => {
                     totalHE += h;
+                    // Aplicar regla: primeras 2h al 25%, resto al 35%
                     const he25 = Math.min(2, h);
                     const he35 = Math.max(0, h - 2);
                     he25Actual += he25;
                     he35Actual += he35;
                 });
-                if (Math.abs(totalHE - heActualTotal) > 0.1) {
-                    distribucionMsg = `⚠️ La suma de horas por día (${totalHE.toFixed(1)}h) no coincide con el total declarado (${heActualTotal.toFixed(1)}h). Se usará la suma real.`;
-                } else {
-                    distribucionMsg = `📊 ${horasDiarias.length} días con distribución variable → ${he25Actual.toFixed(1)}h al 25% y ${he35Actual.toFixed(1)}h al 35%`;
-                }
+                totalHEActual = he25Actual + he35Actual;
+                distribucionMsg = `📊 Distribución manual → ${he25Actual.toFixed(1)}h al 25% y ${he35Actual.toFixed(1)}h al 35%`;
             }
 
             const montoHE25Actual = he25Actual * valorHE25;
             const montoHE35Actual = he35Actual * valorHE35;
-            const totalHEActual = montoHE25Actual + montoHE35Actual;
+            const montoTotalHEActual = montoHE25Actual + montoHE35Actual;
 
             // Feriados y domingos
             let pagoFeriado = 0;
@@ -555,7 +650,7 @@
             }
 
             // Total calculado
-            const totalCalculado = haberBase + banco.totalMonto + totalHEActual + pagoFeriado + pagoDomingo + asignacion;
+            const totalCalculado = haberBase + banco.totalMonto + montoTotalHEActual + pagoFeriado + pagoDomingo + asignacion;
 
             // Comparación
             const diff = totalCalculado - totalRem;
@@ -613,21 +708,18 @@
         }
 
         function limpiar() {
-            baseInput.value = '1025.00';
-            jornalInput.value = '';
-            diasInput.value = '11';
-            totalRemInput.value = '2228.47';
-            asignacionInput.value = '102.50';
-            bancoDia14Input.value = '8';
-            bancoDia15Input.value = '8';
-            heActualTotalInput.value = '37.5';
-            diasHEInput.value = '11';
-            feriadosInput.value = '3';
-            domingosInput.value = '2';
+            baseInput.value = '0';
+            jornalInput.value = '0';
+            diasInput.value = '0';
+            totalRemInput.value = '0';
+            asignacionInput.value = '0';
+            bancoDia14Input.value = '0';
+            bancoDia15Input.value = '0';
+            feriadosInput.value = '0';
+            domingosInput.value = '0';
+            resetearHoras();
             document.querySelector('input[name="feriadoTrab"][value="0"]').checked = true;
             document.querySelector('input[name="domingoTrab"][value="0"]').checked = true;
-            document.querySelector('input[name="distribucion"][value="uniforme"]').checked = true;
-            distribucionVarDiv.style.display = 'none';
             resultadoDiv.style.display = 'none';
             detalleDiv.innerHTML = '';
             actualizarJornalInfo();
@@ -636,6 +728,8 @@
 
         calcularBtn.addEventListener('click', calcular);
         limpiarBtn.addEventListener('click', limpiar);
+        aplicarDescuentoBtn.addEventListener('click', aplicarDescuento);
+        resetHorasBtn.addEventListener('click', resetearHoras);
 
         document.querySelectorAll('input').forEach(inp => {
             inp.addEventListener('keydown', (e) => {
