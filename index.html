@@ -1,451 +1,653 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Boleta IMCO</title>
-
-    <link rel="stylesheet" href="style.css">
-
+    <title>Validador de Boleta - Perú</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 820px;
+            width: 100%;
+            padding: 30px 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        h1 {
+            text-align: center;
+            color: #1a3b5d;
+            font-size: 24px;
+            border-bottom: 3px solid #2e86de;
+            padding-bottom: 12px;
+            margin-top: 0;
+        }
+        .sub {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+            margin-top: -8px;
+            margin-bottom: 25px;
+        }
+        .seccion {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #2e86de;
+        }
+        .seccion h3 {
+            margin: 0 0 12px 0;
+            color: #1a3b5d;
+            font-size: 16px;
+        }
+        .campo {
+            margin-bottom: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 12px;
+        }
+        .campo label {
+            font-weight: 600;
+            color: #1e2b3a;
+            min-width: 200px;
+            font-size: 14px;
+        }
+        .campo input {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 12px;
+            border: 1.5px solid #ccd8e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .campo input:focus {
+            border-color: #2e86de;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46,134,222,0.2);
+        }
+        .campo input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .campo small {
+            font-size: 11px;
+            color: #6b7a8f;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .radio-group label {
+            font-weight: 400;
+            min-width: auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .radio-group input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2e86de;
+            margin: 0;
+        }
+        .botonera {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: #2e86de;
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 8px rgba(46,134,222,0.3);
+        }
+        .btn:hover {
+            background: #1a6bb5;
+            transform: scale(1.02);
+        }
+        .btn-secondary {
+            background: #6c7a8a;
+            box-shadow: 0 4px 8px rgba(108,122,138,0.3);
+        }
+        .btn-secondary:hover {
+            background: #4e5b68;
+        }
+        #resultados {
+            margin-top: 30px;
+            background: #f8fafc;
+            padding: 20px 25px;
+            border-radius: 16px;
+            border-left: 6px solid #2e86de;
+            display: none;
+        }
+        #resultados h2 {
+            margin-top: 0;
+            color: #1a3b5d;
+            font-size: 20px;
+            border-bottom: 1px dashed #bcc9d9;
+            padding-bottom: 10px;
+        }
+        .fila {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #e9edf2;
+            font-size: 14px;
+        }
+        .fila .etiqueta {
+            font-weight: 500;
+            color: #1f2c3a;
+        }
+        .fila .valor {
+            font-weight: 600;
+            color: #0b2642;
+        }
+        .fila.total {
+            border-top: 3px solid #1a3b5d;
+            border-bottom: none;
+            margin-top: 8px;
+            padding-top: 14px;
+            font-size: 17px;
+        }
+        .fila.total .valor {
+            color: #1a6bb5;
+            font-size: 19px;
+        }
+        .destacado {
+            background: #e4edf8;
+            padding: 10px 14px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: 500;
+            color: #004080;
+            font-size: 14px;
+        }
+        .banco-resumen {
+            background: #fef9e7;
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 3px solid #f39c12;
+        }
+        .error {
+            color: #c0392b;
+            font-weight: 500;
+            background: #fdedec;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .ok {
+            color: #1e7e34;
+            background: #e6f7ed;
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .leyenda {
+            font-size: 12px;
+            color: #4a5b6e;
+            margin-top: 15px;
+            border-top: 1px solid #dce3eb;
+            padding-top: 15px;
+            line-height: 1.6;
+        }
+        .info-jornal {
+            font-size: 12px;
+            color: #2e86de;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+        .ejemplo {
+            font-size: 12px;
+            color: #6b7a8f;
+            background: #f0f4f8;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .campo { flex-direction: column; align-items: stretch; }
+            .campo label { min-width: auto; }
+            .campo input { min-width: auto; }
+            .radio-group { justify-content: center; }
+        }
+    </style>
 </head>
-
-
 <body>
+<div class="container">
+    <h1>🧮 Validador de Boleta</h1>
+    <div class="sub">Ingresa los datos de tu boleta y la app calcula cada concepto</div>
 
-
-<header class="titulo">
-
-    <h1>Boleta IMCO</h1>
-
-    <p>
-        Control de horas y comparación de boleta
-    </p>
-
-</header>
-
-
-
-<section class="configuracion">
-
-
-    <div class="campo">
-
-        <label>Mes</label>
-
-        <select id="mes"></select>
-
-    </div>
-
-
-
-    <div class="campo">
-
-        <label>Año</label>
-
-        <select id="anio"></select>
-
-    </div>
-
-
-
-    <div class="campo">
-
-        <label>Quincena</label>
-
-        <select id="quincena">
-
-            <option value="1">
-                Primera (01 - 15)
-            </option>
-
-            <option value="2">
-                Segunda (16 - fin de mes)
-            </option>
-
-        </select>
-
-    </div>
-
-
-
-</section>
-
-
-
-<section class="datos">
-
-
-    <h2>Datos del trabajador</h2>
-
-
-    <div class="grid">
-
-
+    <!-- DATOS GENERALES -->
+    <div class="seccion">
+        <h3>📌 Datos generales</h3>
         <div class="campo">
-
-            <label>
-                Salario diario
-            </label>
-
-            <input 
-            type="number"
-            id="salario"
-            value="85"
-            step="0.01">
-
+            <label>Sueldo base mensual (S/) <span class="ejemplo">ej: 1025</span></label>
+            <input type="number" id="base" value="1025.00" step="0.01">
         </div>
-
-
-
         <div class="campo">
-
-            <label>
-                Sistema pensión
-            </label>
-
-
-            <select id="sistema">
-
-
-                <option value="ONP">
-                    ONP
-                </option>
-
-
-                <option value="AFP">
-                    AFP
-                </option>
-
-
-            </select>
-
-
+            <label>Jornal diario (S/) <span class="ejemplo">opcional</span></label>
+            <input type="number" id="jornal" value="" step="0.01" placeholder="Ej: 93.18">
+            <span class="info-jornal" id="jornalInfo">(si está vacío, se calcula como Base/30)</span>
         </div>
-
-
-
         <div class="campo">
-
-            <label>
-                Asignación familiar
-            </label>
-
-
-            <select id="asignacion">
-
-
-                <option value="no">
-                    No
-                </option>
-
-
-                <option value="si">
-                    Sí
-                </option>
-
-
-            </select>
-
-
+            <label>Días trabajados <span class="ejemplo">ej: 11</span></label>
+            <input type="number" id="dias" value="11" step="0.5" min="0">
         </div>
-
-
+        <div class="campo">
+            <label>Total remuneraciones (S/) <span class="ejemplo">para verificar</span></label>
+            <input type="number" id="totalRem" value="2228.47" step="0.01">
+        </div>
+        <div class="campo">
+            <label>Asignación familiar (S/) <span class="ejemplo">10% de RMV si aplica</span></label>
+            <input type="number" id="asignacion" value="102.50" step="0.01">
+        </div>
     </div>
 
-
-</section>
-
-
-
-
-
-<!-- ==========================
-     DASHBOARD
-=========================== -->
-
-
-<section class="dashboard">
-
-
-    <div class="tarjeta azul">
-
-
-        <span>
-            Horas normales
-        </span>
-
-
-        <strong id="dbNormales">
-            0.00
-        </strong>
-
-
+    <!-- BANCO DE HORAS -->
+    <div class="seccion" style="border-left-color: #e67e22;">
+        <h3>🏦 Banco de horas (últimos 2 días de la quincena anterior)</h3>
+        <div class="campo">
+            <label>Horas extras del penúltimo día <span class="ejemplo">ej: 8</span></label>
+            <input type="number" id="bancoDia14" value="8" step="0.5" min="0">
+        </div>
+        <div class="campo">
+            <label>Horas extras del último día <span class="ejemplo">ej: 8</span></label>
+            <input type="number" id="bancoDia15" value="8" step="0.5" min="0">
+        </div>
+        <div class="banco-resumen">
+            <strong>📌 Automático:</strong> La app calculará cuántas horas van al 25% y cuántas al 35% según la ley (2 primeras horas al 25%, el resto al 35%).
+        </div>
     </div>
 
-
-
-    <div class="tarjeta naranja">
-
-
-        <span>
-            Extra 25%
-        </span>
-
-
-        <strong id="db25">
-            0.00
-        </strong>
-
-
+    <!-- HORAS EXTRAS ACTUALES -->
+    <div class="seccion" style="border-left-color: #27ae60;">
+        <h3>⏱️ Horas extras de la quincena actual</h3>
+        <div class="campo">
+            <label>Total horas extras <span class="ejemplo">ej: 37.5</span></label>
+            <input type="number" id="heActualTotal" value="37.5" step="0.5">
+        </div>
+        <div class="campo">
+            <label>Número de días con horas extras <span class="ejemplo">ej: 11</span></label>
+            <input type="number" id="diasHE" value="11" step="1" min="1">
+        </div>
+        <div class="campo">
+            <label>Distribución de horas</label>
+            <div class="radio-group">
+                <label><input type="radio" name="distribucion" value="uniforme" checked> Uniforme</label>
+                <label><input type="radio" name="distribucion" value="variable"> Variable (ingreso manual)</label>
+            </div>
+        </div>
+        <div id="distribucionVariable" style="display:none; margin-top:10px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="campo" style="margin:0;"><label>Día 1</label><input type="number" id="heDia1" value="3" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 2</label><input type="number" id="heDia2" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 3</label><input type="number" id="heDia3" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 4</label><input type="number" id="heDia4" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 5</label><input type="number" id="heDia5" value="3" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 6</label><input type="number" id="heDia6" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 7</label><input type="number" id="heDia7" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 8</label><input type="number" id="heDia8" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 9</label><input type="number" id="heDia9" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 10</label><input type="number" id="heDia10" value="3" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 11</label><input type="number" id="heDia11" value="3.5" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 12</label><input type="number" id="heDia12" value="0" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 13</label><input type="number" id="heDia13" value="0" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 14</label><input type="number" id="heDia14" value="0" step="0.5" min="0"></div>
+                <div class="campo" style="margin:0;"><label>Día 15</label><input type="number" id="heDia15" value="0" step="0.5" min="0"></div>
+            </div>
+        </div>
     </div>
 
-
-
-    <div class="tarjeta rojo">
-
-
-        <span>
-            Extra 35%
-        </span>
-
-
-        <strong id="db35">
-            0.00
-        </strong>
-
-
+    <!-- FERIADOS Y DOMINGOS -->
+    <div class="seccion">
+        <h3>📅 Feriados y domingos</h3>
+        <div class="campo">
+            <label>Feriados (cantidad) <span class="ejemplo">ej: 3</span></label>
+            <input type="number" id="feriados" value="3" step="1" min="0">
+        </div>
+        <div class="campo">
+            <label>¿Feriados trabajados?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="feriadoTrab" value="1"> Sí (100% extra)</label>
+                <label><input type="radio" name="feriadoTrab" value="0" checked> No (solo pago simple)</label>
+            </div>
+        </div>
+        <div class="campo">
+            <label>Domingos (cantidad) <span class="ejemplo">ej: 2</span></label>
+            <input type="number" id="domingos" value="2" step="1" min="0">
+        </div>
+        <div class="campo">
+            <label>¿Domingos trabajados?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="domingoTrab" value="1"> Sí (100% extra)</label>
+                <label><input type="radio" name="domingoTrab" value="0" checked> No (solo pago simple)</label>
+            </div>
+        </div>
     </div>
 
-
-
-    <div class="tarjeta verde">
-
-
-        <span>
-            Neto estimado
-        </span>
-
-
-        <strong id="dbNeto">
-            S/ 0.00
-        </strong>
-
-
+    <div class="botonera">
+        <button class="btn" id="calcularBtn">📊 Calcular</button>
+        <button class="btn btn-secondary" id="limpiarBtn">Limpiar</button>
     </div>
 
-
-</section>
-
-
-
-
-
-
-<!-- ==========================
-     CALENDARIO
-=========================== -->
-
-
-<section>
-
-
-    <h2>
-        Registro diario
-    </h2>
-
-
-    <div id="calendario">
-
-
+    <!-- RESULTADOS -->
+    <div id="resultados">
+        <h2>📋 Desglose calculado</h2>
+        <div id="detalle"></div>
+        <div class="leyenda">
+            <strong>🔍 ¿Cómo se calcula?</strong><br>
+            • <strong>Jornal diario:</strong> si lo ingresas, se usa ese valor; si no, se calcula como Base/30.<br>
+            • <strong>Banco de horas:</strong> de los últimos 2 días. Las primeras 2 horas de cada día van al 25%, el resto al 35%.<br>
+            • <strong>Horas extras actuales:</strong> se calculan con la regla diaria (2 primeras horas → 25%, el resto → 35%).<br>
+            • <strong>Feriado/Domingo trabajado:</strong> pago simple + 100% extra.<br>
+            • El <strong>Total Remuneraciones</strong> se calcula y se compara con el que ingresaste.
+        </div>
     </div>
-
-
-</section>
-
-
-
-
-
-
-
-<!-- ==========================
-     RESUMEN
-=========================== -->
-
-
-<section class="resumen">
-
-
-<h2>
-Resumen quincena
-</h2>
-
-
-<p>
-Horas normales:
-<b id="hn">
-0.00
-</b>
-</p>
-
-
-<p>
-Extra 25%:
-<b id="he25">
-0.00
-</b>
-</p>
-
-
-<p>
-Extra 35%:
-<b id="he35">
-0.00
-</b>
-</p>
-
-
-<p>
-Días trabajados:
-<b id="dias">
-0
-</b>
-</p>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<!-- ==========================
-     BOLETA ESTIMADA
-=========================== -->
-
-
-<section class="boleta">
-
-
-<h2>
-Boleta estimada
-</h2>
-
-
-
-<p>
-Haber básico:
-
-<b id="haber">
-0.00
-</b>
-
-</p>
-
-
-
-<p>
-Asignación familiar:
-
-<b id="af">
-0.00
-</b>
-
-</p>
-
-
-
-<p>
-Total remuneraciones:
-
-<b id="remu">
-0.00
-</b>
-
-</p>
-
-
-
-<p>
-Descuento:
-
-<b id="descuento">
-0.00
-</b>
-
-</p>
-
-
-
-<p class="total">
-
-NETO:
-
-<b id="neto">
-0.00
-</b>
-
-</p>
-
-
-
-</section>
-
-
-
-
-
-
-
-
-<div class="botones">
-
-
-<button id="guardar">
-
-Guardar
-
-</button>
-
-
-
-<button id="limpiar">
-
-Limpiar quincena
-
-</button>
-
-
 </div>
 
+<script>
+    (function() {
+        // Elementos
+        const baseInput = document.getElementById('base');
+        const jornalInput = document.getElementById('jornal');
+        const jornalInfo = document.getElementById('jornalInfo');
+        const diasInput = document.getElementById('dias');
+        const totalRemInput = document.getElementById('totalRem');
+        const asignacionInput = document.getElementById('asignacion');
 
+        const bancoDia14Input = document.getElementById('bancoDia14');
+        const bancoDia15Input = document.getElementById('bancoDia15');
 
+        const heActualTotalInput = document.getElementById('heActualTotal');
+        const diasHEInput = document.getElementById('diasHE');
+        const distribucionRadios = document.querySelectorAll('input[name="distribucion"]');
+        const distribucionVarDiv = document.getElementById('distribucionVariable');
 
+        const feriadosInput = document.getElementById('feriados');
+        const domingosInput = document.getElementById('domingos');
 
+        const resultadoDiv = document.getElementById('resultados');
+        const detalleDiv = document.getElementById('detalle');
+        const calcularBtn = document.getElementById('calcularBtn');
+        const limpiarBtn = document.getElementById('limpiarBtn');
 
+        // Actualizar info del jornal
+        function actualizarJornalInfo() {
+            const base = parseFloat(baseInput.value) || 0;
+            const jornal = parseFloat(jornalInput.value) || 0;
+            if (jornal > 0) {
+                jornalInfo.textContent = `(usando jornal ingresado: S/ ${jornal.toFixed(2)})`;
+            } else if (base > 0) {
+                const calculado = base / 30;
+                jornalInfo.textContent = `(calculado: Base/30 = S/ ${calculado.toFixed(4)})`;
+            } else {
+                jornalInfo.textContent = '(ingresa un sueldo base para calcular)';
+            }
+        }
 
-<script src="js/config.js"></script>
+        baseInput.addEventListener('input', actualizarJornalInfo);
+        jornalInput.addEventListener('input', actualizarJornalInfo);
 
-<script src="js/imco.js"></script>
+        // Mostrar/ocultar distribución variable
+        distribucionRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                distribucionVarDiv.style.display = (this.value === 'variable') ? 'block' : 'none';
+            });
+        });
 
-<script src="js/calendario.js"></script>
+        // Función para obtener horas por día (variable)
+        function getHorasPorDia() {
+            const horas = [];
+            for (let i = 1; i <= 15; i++) {
+                const val = document.getElementById('heDia' + i);
+                if (val) {
+                    const h = parseFloat(val.value) || 0;
+                    if (h > 0) horas.push(h);
+                }
+            }
+            return horas;
+        }
 
-<script src="js/calculos.js"></script>
+        // Función para calcular banco de horas
+        function calcularBanco(horasDia14, horasDia15, valorHE25, valorHE35) {
+            const he25Dia14 = Math.min(2, horasDia14);
+            const he35Dia14 = Math.max(0, horasDia14 - 2);
+            const he25Dia15 = Math.min(2, horasDia15);
+            const he35Dia15 = Math.max(0, horasDia15 - 2);
 
-<script src="js/storage.js"></script>
+            const totalHE25 = he25Dia14 + he25Dia15;
+            const totalHE35 = he35Dia14 + he35Dia15;
+            const totalHoras = totalHE25 + totalHE35;
 
-<script src="js/app.js"></script>
+            const montoHE25 = totalHE25 * valorHE25;
+            const montoHE35 = totalHE35 * valorHE35;
+            const totalMonto = montoHE25 + montoHE35;
 
+            return {
+                totalHE25,
+                totalHE35,
+                totalHoras,
+                montoHE25,
+                montoHE35,
+                totalMonto,
+                detalle: `📊 Día 14: ${horasDia14}h → ${he25Dia14}h al 25% + ${he35Dia14}h al 35% | Día 15: ${horasDia15}h → ${he25Dia15}h al 25% + ${he35Dia15}h al 35%`
+            };
+        }
 
+        function calcular() {
+            // Leer valores
+            const base = parseFloat(baseInput.value) || 0;
+            let jornal = parseFloat(jornalInput.value) || 0;
+            if (jornal === 0 && base > 0) {
+                jornal = base / 30;
+            }
+            const dias = parseFloat(diasInput.value) || 0;
+            const totalRem = parseFloat(totalRemInput.value) || 0;
+            const asignacion = parseFloat(asignacionInput.value) || 0;
 
+            const bancoDia14 = parseFloat(bancoDia14Input.value) || 0;
+            const bancoDia15 = parseFloat(bancoDia15Input.value) || 0;
+
+            const heActualTotal = parseFloat(heActualTotalInput.value) || 0;
+            const diasHE = parseInt(diasHEInput.value) || 1;
+
+            const feriados = parseInt(feriadosInput.value) || 0;
+            const domingos = parseInt(domingosInput.value) || 0;
+            const feriadoTrab = parseInt(document.querySelector('input[name="feriadoTrab"]:checked').value);
+            const domingoTrab = parseInt(document.querySelector('input[name="domingoTrab"]:checked').value);
+
+            // Validaciones
+            if (base <= 0 || dias <= 0) {
+                detalleDiv.innerHTML = `<div class="error">⚠️ El sueldo base y los días trabajados deben ser mayores a 0.</div>`;
+                resultadoDiv.style.display = 'block';
+                return;
+            }
+
+            // Cálculos base
+            const valorHora = jornal / 8;
+            const valorHE25 = valorHora * 1.25;
+            const valorHE35 = valorHora * 1.35;
+
+            const haberBase = dias * jornal;
+
+            // Banco de horas
+            const banco = calcularBanco(bancoDia14, bancoDia15, valorHE25, valorHE35);
+
+            // Horas extras actuales
+            let he25Actual = 0, he35Actual = 0;
+            let distribucionMsg = '';
+            const distribucion = document.querySelector('input[name="distribucion"]:checked').value;
+
+            if (distribucion === 'uniforme') {
+                const horasPorDia = heActualTotal / diasHE;
+                const he25PorDia = Math.min(2, horasPorDia);
+                const he35PorDia = Math.max(0, horasPorDia - 2);
+                he25Actual = he25PorDia * diasHE;
+                he35Actual = he35PorDia * diasHE;
+                distribucionMsg = `📊 ${diasHE} días con ${horasPorDia.toFixed(1)} h/día → ${he25Actual.toFixed(1)}h al 25% y ${he35Actual.toFixed(1)}h al 35%`;
+            } else {
+                const horasDiarias = getHorasPorDia();
+                if (horasDiarias.length === 0) {
+                    detalleDiv.innerHTML = `<div class="error">⚠️ Ingresa al menos un día con horas extras en la distribución variable.</div>`;
+                    resultadoDiv.style.display = 'block';
+                    return;
+                }
+                let totalHE = 0;
+                horasDiarias.forEach(h => {
+                    totalHE += h;
+                    const he25 = Math.min(2, h);
+                    const he35 = Math.max(0, h - 2);
+                    he25Actual += he25;
+                    he35Actual += he35;
+                });
+                if (Math.abs(totalHE - heActualTotal) > 0.1) {
+                    distribucionMsg = `⚠️ La suma de horas por día (${totalHE.toFixed(1)}h) no coincide con el total declarado (${heActualTotal.toFixed(1)}h). Se usará la suma real.`;
+                } else {
+                    distribucionMsg = `📊 ${horasDiarias.length} días con distribución variable → ${he25Actual.toFixed(1)}h al 25% y ${he35Actual.toFixed(1)}h al 35%`;
+                }
+            }
+
+            const montoHE25Actual = he25Actual * valorHE25;
+            const montoHE35Actual = he35Actual * valorHE35;
+            const totalHEActual = montoHE25Actual + montoHE35Actual;
+
+            // Feriados y domingos
+            let pagoFeriado = 0;
+            if (feriados > 0) {
+                const simple = feriados * jornal;
+                const extra = feriadoTrab === 1 ? feriados * jornal : 0;
+                pagoFeriado = simple + extra;
+            }
+
+            let pagoDomingo = 0;
+            if (domingos > 0) {
+                const simple = domingos * jornal;
+                const extra = domingoTrab === 1 ? domingos * jornal : 0;
+                pagoDomingo = simple + extra;
+            }
+
+            // Total calculado
+            const totalCalculado = haberBase + banco.totalMonto + totalHEActual + pagoFeriado + pagoDomingo + asignacion;
+
+            // Comparación
+            const diff = totalCalculado - totalRem;
+            let mensajeDiff = '';
+            if (Math.abs(diff) > 0.5) {
+                mensajeDiff = `<div class="error">⚠️ Diferencia de S/ ${diff.toFixed(2)} entre el total calculado (S/ ${totalCalculado.toFixed(2)}) y el total ingresado (S/ ${totalRem.toFixed(2)}). Revisa los valores.</div>`;
+            } else if (Math.abs(diff) > 0.01) {
+                mensajeDiff = `<div class="ok">✅ Diferencia mínima de S/ ${diff.toFixed(2)} (por redondeo).</div>`;
+            } else {
+                mensajeDiff = `<div class="ok">✅ Totales coinciden exactamente.</div>`;
+            }
+
+            const horasNormales = dias * 8;
+
+            // Construir HTML de resultados
+            let html = '';
+            html += `<div class="fila"><span class="etiqueta">📌 Sueldo base mensual</span><span class="valor">S/ ${base.toFixed(2)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">📆 Jornal diario (${jornal === base/30 ? 'calculado' : 'ingresado'})</span><span class="valor">S/ ${jornal.toFixed(4)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">⏱️ Valor hora ordinaria</span><span class="valor">S/ ${valorHora.toFixed(4)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">➕ Valor hora extra 25%</span><span class="valor">S/ ${valorHE25.toFixed(4)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">➕ Valor hora extra 35%</span><span class="valor">S/ ${valorHE35.toFixed(4)}</span></div>`;
+            html += `<div style="margin: 12px 0; border-top: 2px solid #d0dbe8;"></div>`;
+
+            html += `<div class="fila"><span class="etiqueta">🧑‍💼 Días trabajados</span><span class="valor">${dias.toFixed(1)} días</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">🕒 Horas normales totales</span><span class="valor">${horasNormales.toFixed(1)} h</span></div>`;
+            html += `<div style="margin: 8px 0; border-top: 1px dashed #d0dbe8;"></div>`;
+
+            html += `<div class="fila"><span class="etiqueta">💰 Haber básico (${dias.toFixed(1)} días × S/ ${jornal.toFixed(4)})</span><span class="valor">S/ ${haberBase.toFixed(2)}</span></div>`;
+
+            if (banco.totalHoras > 0) {
+                html += `<div class="destacado">🏦 Banco de horas (últimos 2 días):</div>`;
+                html += `<div class="fila" style="font-size:12px; color:#555; border-bottom:1px dashed #ccc;"><span class="etiqueta">${banco.detalle}</span></div>`;
+                if (banco.totalHE25 > 0) html += `<div class="fila"><span class="etiqueta">  • 25% (${banco.totalHE25.toFixed(1)} h)</span><span class="valor">S/ ${banco.montoHE25.toFixed(2)}</span></div>`;
+                if (banco.totalHE35 > 0) html += `<div class="fila"><span class="etiqueta">  • 35% (${banco.totalHE35.toFixed(1)} h)</span><span class="valor">S/ ${banco.montoHE35.toFixed(2)}</span></div>`;
+            }
+
+            if (he25Actual > 0 || he35Actual > 0) {
+                html += `<div class="destacado">⏱️ Horas extras actuales:</div>`;
+                html += `<div class="fila" style="font-size:12px; color:#555; border-bottom:1px dashed #ccc;"><span class="etiqueta">${distribucionMsg}</span></div>`;
+                if (he25Actual > 0) html += `<div class="fila"><span class="etiqueta">  • 25% (${he25Actual.toFixed(1)} h)</span><span class="valor">S/ ${montoHE25Actual.toFixed(2)}</span></div>`;
+                if (he35Actual > 0) html += `<div class="fila"><span class="etiqueta">  • 35% (${he35Actual.toFixed(1)} h)</span><span class="valor">S/ ${montoHE35Actual.toFixed(2)}</span></div>`;
+            }
+
+            html += `<div class="fila"><span class="etiqueta">📅 Feriados (${feriados} día${feriados!==1?'s':''}) ${feriadoTrab===1?'✅ trabajado (100% extra)':''}</span><span class="valor">S/ ${pagoFeriado.toFixed(2)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">📅 Domingos (${domingos} día${domingos!==1?'s':''}) ${domingoTrab===1?'✅ trabajado (100% extra)':''}</span><span class="valor">S/ ${pagoDomingo.toFixed(2)}</span></div>`;
+            html += `<div class="fila"><span class="etiqueta">👨‍👦 Asignación familiar</span><span class="valor">S/ ${asignacion.toFixed(2)}</span></div>`;
+            html += `<div class="fila total"><span class="etiqueta">📊 TOTAL REMUNERACIONES (calculado)</span><span class="valor">S/ ${totalCalculado.toFixed(2)}</span></div>`;
+            html += `<div class="fila" style="border-bottom:none; padding-top:0;"><span class="etiqueta">📥 Total ingresado en boleta</span><span class="valor">S/ ${totalRem.toFixed(2)}</span></div>`;
+
+            html += `<div style="margin-top:15px;">${mensajeDiff}</div>`;
+
+            detalleDiv.innerHTML = html;
+            resultadoDiv.style.display = 'block';
+            resultadoDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function limpiar() {
+            baseInput.value = '1025.00';
+            jornalInput.value = '';
+            diasInput.value = '11';
+            totalRemInput.value = '2228.47';
+            asignacionInput.value = '102.50';
+            bancoDia14Input.value = '8';
+            bancoDia15Input.value = '8';
+            heActualTotalInput.value = '37.5';
+            diasHEInput.value = '11';
+            feriadosInput.value = '3';
+            domingosInput.value = '2';
+            document.querySelector('input[name="feriadoTrab"][value="0"]').checked = true;
+            document.querySelector('input[name="domingoTrab"][value="0"]').checked = true;
+            document.querySelector('input[name="distribucion"][value="uniforme"]').checked = true;
+            distribucionVarDiv.style.display = 'none';
+            resultadoDiv.style.display = 'none';
+            detalleDiv.innerHTML = '';
+            actualizarJornalInfo();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        calcularBtn.addEventListener('click', calcular);
+        limpiarBtn.addEventListener('click', limpiar);
+
+        document.querySelectorAll('input').forEach(inp => {
+            inp.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') calcular();
+            });
+        });
+
+        actualizarJornalInfo();
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(calcular, 300);
+        });
+    })();
+</script>
 </body>
-
 </html>
