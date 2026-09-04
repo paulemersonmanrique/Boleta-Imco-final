@@ -166,18 +166,9 @@ function calcularPlanilla() {
     const pagoVacaciones = Math.round((jornal * diasVaca) * 100) / 100;
     const pagoMedico = Math.round((jornal * diasMedico) * 100) / 100;
     
-    // Regla inteligente del dominical quincenal de IMCO
-    let salarioDominical = 0;
-    const totalDiasBase = diasTrab + feriados + diasVaca + diasMedico;
-    if (totalDiasBase >= 11) {
-        salarioDominical = (domingos === 3) ? 198.33 : 184.17;
-    } else {
-        salarioDominical = Math.round((domingos * jornal) * 100) / 100;
-    }
-    
-    if ((diasTrab === 11 || diasTrab === 12) && feriados === 0 && he100 === 0 && bonosExtras === 0 && diasVaca === 0 && diasMedico === 0) {
-        salarioDominical = 170.00;
-    }
+    // ✅ NUEVO CÁLCULO PROPORCIONAL DEL DOMINICAL
+    // Fórmula: (Días Trabajados / 6) × Jornal Diario
+    const salarioDominical = Math.round(((diasTrab / 6) * jornal) * 100) / 100;
 
     // Factor exacto corporativo sin truncamiento laboral prematuro
     const valorHoraBaseExacto = ((jornal * 15) + asigFam) / 120;
@@ -224,7 +215,7 @@ function calcularPlanilla() {
         ${montoHe25 > 0 ? `<tr><td>HRS EXTRAS DIURNA 25%</td><td>S/ ${montoHe25.toFixed(2)}</td><td>-</td><td>-</td></tr>` : ''}
         ${montoHe35 > 0 ? `<tr><td>HRS EXTRAS DIURNA 35%</td><td>S/ ${montoHe35.toFixed(2)}</td><td>-</td><td>-</td></tr>` : ''}
         ${montoHe100 > 0 ? `<tr><td>HRS EXTRAS DOBLES FERIADO</td><td>S/ ${montoHe100.toFixed(2)}</td><td>-</td><td>-</td></tr>` : ''}
-        <tr><td>SALARIO DOMINICAL</td><td>S/ ${salarioDominical.toFixed(2)}</td><td>-</td><td>-</td></tr>
+        <tr><td>SALARIO DOMINICAL (Proporcional)</td><td>S/ ${salarioDominical.toFixed(2)}</td><td>-</td><td>-</td></tr>
         
         <tr><td>DESCUENTO PREVISIONAL (ONP/AFP)</td><td>-</td><td>S/ ${descuentoPension.toFixed(2)}</td><td>-</td></tr>
         ${quinta > 0 ? `<tr><td>RETENCION QUINTA CATEGORIA</td><td>-</td><td>S/ ${quinta.toFixed(2)}</td><td>-</td></tr>` : ''}
